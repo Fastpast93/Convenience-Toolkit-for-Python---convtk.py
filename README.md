@@ -1,4 +1,4 @@
-Google Docs README:
+Google Docs README: https://docs.google.com/document/d/1zXlMgV3WgoFm7qhwfaX6Z9TLZuIdm7RCWxxl8Twqb8Y/edit?tab=t.0
 
 Convenience-Toolkit-for-Python - convtk.py
 A bundle of items to make your code more readable and faster to code.
