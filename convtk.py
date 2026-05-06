@@ -4,7 +4,9 @@ Welcome to the convtk, or "Convenience Toolkit". This is a project of mine meant
 code faster and more readable.
 Main Contributor: Fastpast93
 '''
-
+#Custom Errors
+class ModeError(Exception):
+    pass
 #String Tools
 
 def mul_replace(string, dict): # <-- Takes a Replacement Dictionary and a string and replaces any amount of keywords with their respective replacement
@@ -41,7 +43,7 @@ def mul_case(collection, set_case="upper"): # <--Takes a List or Tuple and sets 
             output.append(string.lower())
         return output
 
-def mul_title(collection): # <--Takes a List or Tuple and returns the collection with all of the words capitalized.
+def mul_title(collection): # <--Takes a List or Tuple and returns the collection with all of the words capitalized
     output = []
     for string in collection:
         output.append(string.title())
@@ -52,36 +54,76 @@ def mul_title(collection): # <--Takes a List or Tuple and returns the collection
 
 def key_value_separator(dict): # <-- Takes a Dict and returns a 2D list of keys and values.
     keys, values = [], []
-    for key, value in dict:
+    for key, value in dict.items():
         keys, values = keys.append(key), values.append(value)
     return [keys, values]
     
 #Math Tools
 
-def sqrt(num): # <-- Takes a number and returns its square root
+def sqrt(num=0): # <-- Takes a number and returns its square root
     return num ** 0.5
 
-def sqre(num): # <-- Takes a number and returns the square
+def parity(num=0): # <-- Takes a number and returns if it's even or odd
+    if num % 2 == 0:
+        return "even"
+    else:
+        return "odd"
+    
+def sqre(num=0): # <-- Takes a number and returns the square
     return num ** 2
 
-def calculate_hypotenuse(leg_a, leg_b): # <-- takes leg a and leg b of a right triangle and returns the hypotenuse
+def calculate_hypotenuse(leg_a=0, leg_b=0): # <-- Takes leg a and leg b of a right triangle and returns the hypotenuse
     return sqrt(sqre(leg_a)) + (sqre(leg_b))
 
-def calculate_leg_a(leg_b, hypotenuse):
+def calculate_leg_a(leg_b=0, hypotenuse=0): # <-- Takes leg b and the hypotenuse and returns leg a
     return sqrt(sqre(hypotenuse) - sqre(leg_b))
 
-def calculate_leg_b(leg_a, hypotenuse):
+def calculate_leg_b(leg_a=0, hypotenuse=0): # <-- takes leg a and the hypotenuse and returns leg b
     return sqrt(sqre(hypotenuse) - (leg_a))
 
+def num_cleaner(num): # <-- Takes a number and decides if it should be a float or integer
+    if num == int(num):
+        return int(num)
+    else:
+        return num
 
-#Misc Tools
-
-def compare(a, b):
-    if a < b:
-        return "a is less than b"
-    elif a==b:
-        return "a equals b"
-    elif a>b:
-        return "a is greater than b"
     
-print(collections_to_dict("USA", "Washington, D.C"))
+
+#File Tools
+
+def clean_path(file_path=""): # <-- Takes a file path and cleans it so it can be inserted directly into a file path lookup
+    return mul_replace(file_path, {'\\':'/', '"':''})
+
+def ez_file(file_path, mode="read", text=""): # <-- Takes a file path and a mode (read, write) and does the mode to the file. If writing, use the text arg
+    match mode.lower():
+        case "read":
+            with open((clean_path(file_path)), "r") as f:
+                return f.read()
+        case "write":
+            with open((clean_path(file_path)), "w") as f:
+                f.write(text)
+        case _:
+            raise ModeError(f"From convtk: Expected read, write, as a mode but instead was given \"{mode}\"")
+
+def ez_json(file_path, mode="read", text=""): # <-- Takes a json file path and a mode (read, write) and does the mode to the file. If writing, use the text arg
+    try:
+        match mode.lower():
+            case "read":
+                with open((clean_path(file_path)), "r") as f:
+                    return json.load()
+            case "write":
+                with open((clean_path(file_path)), "w") as f:
+                    json.dump(text)
+            case _:
+                raise ModeError(f"From convtk: Expected read, write, as a mode but instead was given \"{mode}\"")
+    except NameError:
+        import json
+        match mode.lower():
+            case "read":
+                with open((clean_path(file_path)), "r") as f:
+                    return json.load()
+            case "write":
+                with open((clean_path(file_path)), "w") as f:
+                    json.dump(text)
+            case _:
+                raise ModeError(f"From convtk: Expected read, write, as a mode but instead was given \"{mode}\"")
